@@ -69,21 +69,22 @@ main (int argc, char **argv)
         if (chdir("/") < 0)
                 die("can't change working dir to root");
 
-
-        if ((server_sockfd = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0) 
-                die("Error: could not create socket");
-
         /* 
          * Close all open file descriptors
          */
+        if (getrlimit(RLIMIT_NOFILE, &rl) < 0)
+                die("can't get file limit");
         if (rl.rlim_max == RLIM_INFINITY)
                 rl.rlim_max = 1024;
         for (i = 0; i < rl.rlim_max; i++)
                 close(i);
 
         /*
-         * Bind port and listen for incoming connections
+         * Open socket, bind port and listen for incoming connections
          */
+        if ((server_sockfd = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0) 
+                die("can't create socket");
+
         server_addr.sin_family = AF_INET;
         server_addr.sin_port = htons(PORT);
         server_addr.sin_addr.s_addr = htonl(INADDR_ANY);
