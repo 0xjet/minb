@@ -47,7 +47,7 @@ main (int argc, char **argv)
         if ((pid=fork()) < 0 )
                 die("fork fail");
         else if (pid != 0) /* parent */
-                exit(0);
+                exit(EXIT_SUCCESS);
         setsid();
 
         /*
@@ -61,7 +61,7 @@ main (int argc, char **argv)
         if ((pid = fork()) < 0)
                 die("can't double fork");
         else if (pid != 0) /* parent */
-                exit(0);
+                exit(EXIT_SUCCESS);
 
         /*
          * Change current working directory to root
